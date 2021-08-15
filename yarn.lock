@@ -972,10 +972,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@liuyunjs/hooks@^1.1.0-beta1", "@liuyunjs/hooks@^1.1.0-beta2":
-  version "1.1.0-beta2"
-  resolved "https://registry.yarnpkg.com/@liuyunjs/hooks/-/hooks-1.1.0-beta2.tgz#b1111c9bee1b5dc51ce728bf03bb45143615ca06"
-  integrity sha512-ofImWCP5vCS3U0aMcSQK3VCV9XRdp1qShd8vuZoUeycDEXDD/R1g17A2iXHWUrbvi3s09HwiBfvw6ATTh0c08g==
+"@liuyunjs/hooks@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@liuyunjs/hooks/-/hooks-1.1.5.tgz#828ac6d08870b6a4f2053f587503ddc808b3c47d"
+  integrity sha512-6dX8Zq/xwDmZ9EldARqlvNt/gW8CYkbNef3QcyBVf+8lR0AIdo8+n9eTFj9cBBhJUhboNywLfqcUwbyOoGwMBA==
   dependencies:
     "@liuyunjs/timer" "^1.0.0-beta3"
     "@liuyunjs/utils" "^1.0.0"
@@ -1317,10 +1317,28 @@
   dependencies:
     "@types/react" "^16"
 
-"@types/react@*", "@types/react@^16", "@types/react@^17":
+"@types/react@*":
   version "17.0.14"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.14.tgz#f0629761ca02945c4e8fea99b8177f4c5c61fb0f"
   integrity sha512-0WwKHUbWuQWOce61UexYuWTGuGY/8JvtUe/dtQ6lR4sZ3UiylHotJeWpf3ArP9+DSGUoLY3wbU59VyMrJps5VQ==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^16":
+  version "16.14.13"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.13.tgz#14f77c75ea581fa632907440dfda23b3c6ab24c9"
+  integrity sha512-KznsRYfqPmbcA5pMxc4mYQ7UgsJa2tAgKE2YwEmY5xKaTVZXLAY/ImBohyQHnEoIjxIJR+Um4FmaEYDr3q3zlg==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^17.0.18":
+  version "17.0.18"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.18.tgz#4109cbbd901be9582e5e39e3d77acd7b66bb7fbe"
+  integrity sha512-YTLgu7oS5zvSqq49X5Iue5oAbVGhgPc5Au29SJC4VeE17V6gASoOxVkUDy9pXFMRFxCWCD9fLeweNFizo3UzOg==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -5716,12 +5734,12 @@ rimraf@~2.6.2:
   dependencies:
     glob "^7.1.3"
 
-rmotion@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/rmotion/-/rmotion-0.0.4.tgz#61d8643687b51dbb39cdaad8ef3089aa7cf2c492"
-  integrity sha512-X0rAHlEmSD5mKU3KSIg6HDpSSk9JJCjtOwjJdnz7D1+ILfnIDRYwCaZBdeHEBhGtgTR6mYL3M4cVDy+jh2Z9ew==
+rmotion@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/rmotion/-/rmotion-1.0.0.tgz#8dd1833371ff8e6c276a88dfb829328b32537846"
+  integrity sha512-1PCsooZA8BmDXYF33BAkIYlJU+xN46lhZppyJ4Wwo0hmS3sYs7cYaUzb0JaMPZyE7upgcv7nKqUaJu2jL5BxYw==
   dependencies:
-    "@liuyunjs/hooks" "^1.1.0-beta1"
+    "@liuyunjs/hooks" "^1.1.5"
     "@liuyunjs/utils" "^1.0.0"
     framer-motion "^4.1.17"
     hoist-non-react-statics "^3.3.2"

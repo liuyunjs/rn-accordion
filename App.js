@@ -10,7 +10,11 @@
 
 import React from 'react';
 import { Text } from 'react-native';
-import { AccordionFlatList, AccordionPanel, AccordionContent } from './library';
+import {
+  AccordionFlatList,
+  AccordionPanel,
+  AccordionContent,
+} from './library/main';
 
 const Item = React.memo(({ item }) => {
   const [count, setCount] = React.useState(6);
