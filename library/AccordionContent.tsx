@@ -1,65 +1,31 @@
-import React from 'react';
-import { RMotionView } from 'rmotion';
-import {
-  View,
-  LayoutChangeEvent,
-  StyleSheet,
-  ViewProps,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
-import { AccordionSelectedContext } from './AccordionContext';
+import * as React from 'react';
+import { Collapsible, CollapsibleProps } from './Collapsible';
+import { ManagerContext, AccordionKeyContext } from './AccordionContext';
 
-export type AccordionContentProps = ViewProps & {
-  contentContainerStyle?: StyleProp<ViewStyle>;
+export type AccordionContentProps = Omit<CollapsibleProps, 'collapsed'> & {};
+
+const useSelected = () => {
+  const manager = React.useContext(ManagerContext);
+  const key = React.useContext(AccordionKeyContext);
+  const [selected, setSelected] = React.useState(() => manager.isSelected(key));
+
+  React.useEffect(() => {
+    const subscribe = () => {
+      setSelected(manager.isSelected(key));
+    };
+
+    manager.on('update', subscribe);
+
+    return () => {
+      manager.off('update', subscribe);
+    };
+  }, [key, manager]);
+
+  return selected;
 };
 
-export const AccordionContent: React.FC<AccordionContentProps> = ({
-  contentContainerStyle,
-  style,
-  children,
-  ...rest
-}) => {
-  const selected = React.useContext(AccordionSelectedContext);
-  const initSelected = React.useRef(selected).current;
-  const mountedRef = React.useRef<boolean>();
-  const [height, setHeight] = React.useState(-1);
-  if (selected) {
-    mountedRef.current = true;
-  }
-  if (!mountedRef.current) return null;
+export const AccordionContent: React.FC<AccordionContentProps> = (props) => {
+  const selected = useSelected();
 
-  const needAnim = !initSelected || height !== -1;
-
-  const onLayout = (e: LayoutChangeEvent) => {
-    setHeight(e.nativeEvent.layout.height);
-  };
-
-  return (
-    <RMotionView
-      {...rest}
-      style={[style, styles.overflow]}
-      animate={
-        needAnim
-          ? {
-              height: selected && height !== -1 ? height : 0,
-            }
-          : undefined
-      }>
-      <View
-        style={[contentContainerStyle, needAnim && styles.float]}
-        onLayout={onLayout}>
-        {children}
-      </View>
-    </RMotionView>
-  );
+  return <Collapsible {...props} collapsed={!selected} />;
 };
-
-const styles = StyleSheet.create({
-  float: {
-    position: 'absolute',
-  },
-  overflow: {
-    overflow: 'hidden',
-  },
-});

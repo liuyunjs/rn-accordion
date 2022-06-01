@@ -1,22 +1,19 @@
-import React from 'react';
+import * as React from 'react';
 import {
   GestureResponderEvent,
   TouchableOpacity,
   TouchableOpacityProps,
 } from 'react-native';
-import {
-  AccordionKeyContext,
-  AccordionToggleContext,
-} from './AccordionContext';
+import { AccordionKeyContext, ManagerContext } from './AccordionContext';
 
 export type AccordionPanelProps = TouchableOpacityProps;
 
 export const AccordionPanel: React.FC<AccordionPanelProps> = (props) => {
   const key = React.useContext(AccordionKeyContext);
-  const toggle = React.useContext(AccordionToggleContext);
+  const manager = React.useContext(ManagerContext);
 
   const onPress = (e: GestureResponderEvent) => {
-    toggle(key);
+    manager?.toggle(key);
     props.onPress?.(e);
   };
 

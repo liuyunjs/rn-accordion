@@ -1,25 +1,19 @@
-import React from 'react';
-import {
-  AccordionSelectedContext,
-  AccordionKeyContext,
-  AccordionContext,
-} from './AccordionContext';
+import * as React from 'react';
+import { AccordionKeyContext } from './AccordionContext';
 
 export type AccordionItemProps = {
   id: string | number;
   children?: React.ReactNode;
 };
 
-export const AccordionItem = React.memo<AccordionItemProps>(
-  function AccordionItem({ id, children }) {
-    const selected = React.useContext(AccordionContext);
-    const key = id + '';
-    return (
-      <AccordionKeyContext.Provider value={key}>
-        <AccordionSelectedContext.Provider value={!!selected[key]}>
-          {children}
-        </AccordionSelectedContext.Provider>
-      </AccordionKeyContext.Provider>
-    );
-  },
-);
+export const AccordionItem: React.FC<AccordionItemProps> = ({
+  id,
+  children,
+}) => {
+  const key = id + '';
+  return (
+    <AccordionKeyContext.Provider value={key}>
+      {children}
+    </AccordionKeyContext.Provider>
+  );
+};

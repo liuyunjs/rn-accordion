@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
   FlatList,
   SectionList,
@@ -37,15 +37,11 @@ const createAccordionList: CreateAccordionList = (Component: any) => {
 
     const renderItem = React.useCallback(
       (info: ListRenderItemInfo<any>) => {
-        const key = keyExtractor
-          ? keyExtractor(info.item, info.index)
-          : info.index;
-
-        const elem = renderItemInput ? renderItemInput(info) : null;
+        const key = keyExtractor?.(info.item, info.index) ?? info.index;
 
         return (
           <AccordionItem key={key} id={key}>
-            {elem}
+            {renderItemInput?.(info)}
           </AccordionItem>
         );
       },
@@ -53,6 +49,7 @@ const createAccordionList: CreateAccordionList = (Component: any) => {
     );
 
     return (
+      // @ts-ignore
       <AccordionProvider
         accordion={accordion}
         onSelected={onSelected}

@@ -8,24 +8,24 @@
  * @format
  */
 
-import React from 'react';
-import { Text } from 'react-native';
+import * as React from 'react';
+import { SafeAreaView, Text } from 'react-native';
 import {
   AccordionFlatList,
   AccordionPanel,
   AccordionContent,
 } from './library/main';
 
-const Item = React.memo(({ item }) => {
+const Item = React.memo(({ item }: { item: any }) => {
   const [count, setCount] = React.useState(6);
 
   return (
     <>
-      <AccordionPanel style={{ height: 100 }}>
+      <AccordionPanel style={{ height: 100, backgroundColor: 'blue' }}>
         <Text style={{ fontSize: 30 }}>{item}</Text>
       </AccordionPanel>
-      <AccordionContent>
-        <Text onPress={() => setCount(count + 1)} style={{ fontSize: 24 }}>
+      <AccordionContent style={{ backgroundColor: 'red' }}>
+        <Text onPress={() => setCount(count + 10)} style={{ fontSize: 24 }}>
           {item} -1
         </Text>
         {new Array(count).fill(0).map((v, i) => {
@@ -41,15 +41,18 @@ const Item = React.memo(({ item }) => {
   );
 });
 
-export default function () {
+export default function App() {
   return (
-    <AccordionFlatList
-      accordion={false}
-      renderItem={({ item }) => {
-        return <Item item={item} />;
-      }}
-      keyExtractor={(i) => i + ''}
-      data={new Array(100).fill(0).map((v, i) => i)}
-    />
+    <SafeAreaView>
+      <AccordionFlatList
+        // accordion
+        renderItem={({ item }) => {
+          return <Item item={item} />;
+        }}
+        // selected={'2'}
+        keyExtractor={(i) => i + ''}
+        data={new Array(100).fill(0).map((v, i) => i)}
+      />
+    </SafeAreaView>
   );
 }

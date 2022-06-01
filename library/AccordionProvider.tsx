@@ -1,60 +1,45 @@
-import React from 'react';
-import { useMemoize } from '@liuyunjs/hooks/lib/useMemoize';
-import { useReactCallback } from '@liuyunjs/hooks/lib/useReactCallback';
-import { AccordionContext, AccordionToggleContext } from './AccordionContext';
+import * as React from 'react';
+import { useWillMount } from '@liuyunjs/hooks/lib/useWillMount';
+import { ManagerContext } from './AccordionContext';
+import { AccordionManager } from './AccordionManager';
 
-export type AccordionProviderProps = {
-  selected: string[] | string | number | number[];
-  onSelected: (selected: string[]) => void;
-  accordion?: boolean;
+type DefaultProviderProps = {
+  selected?: string[];
+  onSelected?: (selected: string[]) => void;
+  accordion?: false;
 };
+
+type TAccordionProviderProps = {
+  selected?: string;
+  onSelected?: (selected?: string) => void;
+  accordion: true;
+};
+
+export type AccordionProviderProps =
+  | TAccordionProviderProps
+  | DefaultProviderProps;
+
 export const AccordionProvider: React.FC<AccordionProviderProps> = ({
-  accordion = true,
+  accordion,
   onSelected,
-  selected = [],
+  selected,
   children,
 }) => {
-  const [ctx, setCtx] = React.useState<{ selected: Record<string, 1> }>({
-    selected: {},
-  });
+  const manager = useWillMount(() => new AccordionManager());
 
-  useMemoize(
-    () => {
-      const arr =
-        selected != null
-          ? Array.isArray(selected)
-            ? selected
-            : [selected]
-          : [];
-      ctx.selected = {};
-      arr.forEach((item) => {
-        const key = item + '';
-        ctx.selected[key] = 1;
-      });
-    },
-    selected,
-    1,
-  );
+  manager.subscribe(onSelected);
+  manager.accordion(accordion);
 
-  const onToggle = useReactCallback((key: string) => {
-    const newCtx = { selected: { ...ctx.selected } };
-    if (newCtx.selected[key]) {
-      delete newCtx.selected[key];
-    } else {
-      if (accordion) {
-        newCtx.selected = {};
-      }
-      newCtx.selected[key] = 1;
-    }
-    setCtx(newCtx);
-    onSelected?.(Object.keys(newCtx.selected));
-  });
+  React.useMemo(() => manager.setSelected(selected), [manager, selected]);
 
   return (
-    <AccordionToggleContext.Provider value={onToggle}>
-      <AccordionContext.Provider value={ctx.selected}>
-        {children}
-      </AccordionContext.Provider>
-    </AccordionToggleContext.Provider>
+    <ManagerContext.Provider value={manager}>
+      {children}
+    </ManagerContext.Provider>
   );
+};
+
+AccordionProvider.defaultProps = {
+  accordion: false,
+  selected: [],
 };

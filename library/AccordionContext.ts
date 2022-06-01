@@ -1,11 +1,8 @@
-import React from 'react';
+import * as React from 'react';
+import { AccordionManager } from './AccordionManager';
 
 // @ts-ignore
-export const AccordionKeyContext = React.createContext<string>(null);
-export const AccordionSelectedContext = React.createContext<boolean>(false);
+export const AccordionKeyContext = React.createContext<string>();
 
-export const AccordionToggleContext =
-  // @ts-ignore
-  React.createContext<(key: string) => void>(null);
-
-export const AccordionContext = React.createContext<Record<string, 1>>({});
+// @ts-ignore
+export const ManagerContext = React.createContext<AccordionManager>();

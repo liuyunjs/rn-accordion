@@ -14,6 +14,7 @@
 		190B04B93BDA9C878266F84F /* libPods-raccordion-raccordionTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E11CF1F8679263822F47CE30 /* libPods-raccordion-raccordionTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		BA8F3DB9DC8CEC7BA7EBE017 /* libPods-raccordion.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C1B2B3713B6E5A215549BB41 /* libPods-raccordion.a */; };
+		DF65E2E6282BA93C00664E37 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF65E2E5282BA93C00664E37 /* App.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +42,8 @@
 		7A93CB73C655B2B8693524FB /* Pods-raccordion.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-raccordion.debug.xcconfig"; path = "Target Support Files/Pods-raccordion/Pods-raccordion.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = raccordion/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C1B2B3713B6E5A215549BB41 /* libPods-raccordion.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-raccordion.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF65E2E4282BA93B00664E37 /* raccordion-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "raccordion-Bridging-Header.h"; sourceTree = "<group>"; };
+		DF65E2E5282BA93C00664E37 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		E11CF1F8679263822F47CE30 /* libPods-raccordion-raccordionTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-raccordion-raccordionTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F400F8B1FBBD534B9FC04A20 /* Pods-raccordion-raccordionTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-raccordion-raccordionTests.release.xcconfig"; path = "Target Support Files/Pods-raccordion-raccordionTests/Pods-raccordion-raccordionTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -92,6 +95,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				DF65E2E5282BA93C00664E37 /* App.swift */,
+				DF65E2E4282BA93B00664E37 /* raccordion-Bridging-Header.h */,
 			);
 			name = raccordion;
 			sourceTree = "<group>";
@@ -104,7 +109,6 @@
 				4FB8C5A4B64D7AD7FEDC3A4A /* Pods-raccordion-raccordionTests.debug.xcconfig */,
 				F400F8B1FBBD534B9FC04A20 /* Pods-raccordion-raccordionTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -208,7 +212,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1320;
 					};
 				};
 			};
@@ -411,6 +415,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF65E2E6282BA93C00664E37 /* App.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -431,6 +436,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4FB8C5A4B64D7AD7FEDC3A4A /* Pods-raccordion-raccordionTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -458,6 +464,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F400F8B1FBBD534B9FC04A20 /* Pods-raccordion-raccordionTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = raccordionTests/Info.plist;
@@ -498,6 +505,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = raccordion;
+				SWIFT_OBJC_BRIDGING_HEADER = "raccordion-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -523,6 +531,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = raccordion;
+				SWIFT_OBJC_BRIDGING_HEADER = "raccordion-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

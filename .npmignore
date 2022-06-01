@@ -4,7 +4,7 @@ node_modules
 android
 ios
 __tests__
-App.js
+App.tsx
 index.js
 babel.config.js
 metro.config.js
@@ -16,3 +16,6 @@ app.json
 .gitignore
 .prettierrc.js
 .watchmanconfig
+library
+tsconfig.json
+rollup.config.js
