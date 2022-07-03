@@ -8,7 +8,9 @@ import { AccordionKeyContext, ManagerContext } from './AccordionContext';
 
 export type AccordionPanelProps = TouchableOpacityProps;
 
-export const AccordionPanel: React.FC<AccordionPanelProps> = (props) => {
+export const AccordionPanel: React.FC<
+  React.PropsWithChildren<AccordionPanelProps>
+> = (props) => {
   const key = React.useContext(AccordionKeyContext);
   const manager = React.useContext(ManagerContext);
 

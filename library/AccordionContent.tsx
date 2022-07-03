@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { Collapsible, CollapsibleProps } from './Collapsible';
+import { LegacyCollapsible, CollapsibleProps } from './LegacyCollapsible';
+import { Collapsible, CollapsibleV2Props } from './Collapsible';
 import { ManagerContext, AccordionKeyContext } from './AccordionContext';
 
-export type AccordionContentProps = Omit<CollapsibleProps, 'collapsed'> & {};
+export type AccordionContentProps =
+  | (Omit<CollapsibleProps, 'collapsed'> & { useV2?: false })
+  | (Omit<CollapsibleV2Props, 'collapsed'> & { useV2: boolean } & {});
 
 const useSelected = () => {
   const manager = React.useContext(ManagerContext);
@@ -24,8 +27,11 @@ const useSelected = () => {
   return selected;
 };
 
-export const AccordionContent: React.FC<AccordionContentProps> = (props) => {
+export const AccordionContent: React.FC<
+  React.PropsWithChildren<AccordionContentProps>
+> = (props) => {
   const selected = useSelected();
+  const Component = props.useV2 ? Collapsible : LegacyCollapsible;
 
-  return <Collapsible {...props} collapsed={!selected} />;
+  return <Component {...(props as any)} collapsed={!selected} />;
 };

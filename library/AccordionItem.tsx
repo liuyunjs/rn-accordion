@@ -6,10 +6,9 @@ export type AccordionItemProps = {
   children?: React.ReactNode;
 };
 
-export const AccordionItem: React.FC<AccordionItemProps> = ({
-  id,
-  children,
-}) => {
+export const AccordionItem: React.FC<
+  React.PropsWithChildren<AccordionItemProps>
+> = ({ id, children }) => {
   const key = id + '';
   return (
     <AccordionKeyContext.Provider value={key}>

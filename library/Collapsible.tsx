@@ -1,239 +1,122 @@
 import * as React from 'react';
+import { StyleProp, ViewStyle, EasingFunction } from 'react-native';
 import Animated, {
-  block,
-  Clock,
-  clockRunning,
-  cond,
-  EasingNode,
-  interpolateNode,
-  not,
-  set,
-  startClock,
-  stopClock,
-  timing,
-  Value,
-  Extrapolate,
-  and,
-  neq,
-  call,
-  Easing as _Easing,
-  interpolate as _interpolate,
+  EntryAnimationsValues,
+  ExitAnimationsValues,
+  withTiming,
+  Easing,
+  EntryExitAnimationFunction,
+  AnimateStyle,
+  useSharedValue,
+  useAnimatedStyle,
+  LayoutAnimationFunction,
 } from 'react-native-reanimated';
-import { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
-import { useConst } from '@liuyunjs/hooks/lib/useConst';
-import { useWillMount } from '@liuyunjs/hooks/lib/useWillMount';
-import { useForceUpdate } from '@liuyunjs/hooks/lib/useForceUpdate';
 
-const Easing = EasingNode || _Easing;
-const interpolate = interpolateNode || _interpolate;
-
-export interface CollapsibleInternalProps {
+interface CollapsibleV2InternalProps {
   initial: boolean;
-  collapsed: boolean;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
-  easing: (t: Animated.Adaptable<number>) => Animated.Node<number>;
+  easing: EasingFunction;
   align: 'top' | 'center' | 'bottom';
   duration: number;
+  collapsed: boolean;
 }
 
-export type CollapsibleProps = Partial<
-  Omit<CollapsibleInternalProps, 'initial'>
+export type CollapsibleV2Props = Partial<
+  Omit<CollapsibleV2InternalProps, 'initial'>
 >;
 
-type Context = ReturnType<typeof useInitializer>;
+const CollapsibleV2Internal: React.FC<
+  React.PropsWithChildren<CollapsibleV2InternalProps>
+> = ({
+  children,
+  easing,
+  align,
+  style,
+  contentContainerStyle,
+  duration,
+  initial,
+  collapsed,
+}) => {
+  const height = useSharedValue(initial ? 0 : 'auto');
 
-const useInitializer = () => {
-  const forceUpdate = useForceUpdate();
+  const animate = (from: number, to: number) => {
+    'worklet';
+    const config = { duration, easing };
+    height.value = from;
+    height.value = withTiming(to, config);
 
-  return useWillMount(() => ({
-    height: new Value<number>(0),
-    toValue: new Value<number>(0),
-    animating: new Value<number>(0),
-    clock: new Clock(),
-    finished: new Value<number>(0),
-    time: new Value<number>(0),
-    frameTime: new Value<number>(0),
-    isAnimating: false,
-    forceUpdate,
-    ready: false,
-    contentHeight: 0,
-    collapsed: false,
-  }));
-};
+    const initialValues: ViewStyle = {
+      height: from,
+    };
 
-const useHeight = (
-  { easing, duration }: CollapsibleInternalProps,
-  ctx: Context,
-) =>
-  React.useMemo(() => {
-    return block([
-      cond(
-        ctx.animating,
-        [
-          timing(
-            ctx.clock,
-            {
-              position: ctx.height,
-              time: ctx.time,
-              frameTime: ctx.frameTime,
-              finished: ctx.finished,
-            },
-            {
-              easing,
-              duration,
-              toValue: ctx.toValue,
-            },
+    const animations: AnimateStyle<ViewStyle> = {
+      height: withTiming(to, config),
+    };
+
+    if (align !== 'top') {
+      initialValues.transform = [
+        { translateY: align === 'center' ? to / -2 : -to },
+      ];
+      animations.transform = [
+        {
+          translateY: withTiming(
+            align === 'center' ? from / -2 : -from,
+            config,
           ),
-          cond(
-            and(not(clockRunning(ctx.clock)), neq(ctx.height, ctx.toValue)),
-            startClock(ctx.clock),
-          ),
-          cond(ctx.finished, [
-            stopClock(ctx.clock),
-            set(ctx.animating, 0),
-            call([ctx.animating], () => {
-              ctx.isAnimating = false;
-              ctx.forceUpdate();
-            }),
-          ]),
-        ],
-        stopClock(ctx.clock),
-      ),
-      ctx.height,
-    ]);
-    //  eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration, easing]);
-
-const useContentTranslate = (
-  ctx: Context,
-  align: CollapsibleInternalProps['align'],
-) => {
-  const height = ctx.contentHeight;
-  return React.useMemo(() => {
-    if (align === 'top' || !height) {
-      return 0;
+        },
+      ];
     }
-    return interpolate(ctx.height, {
-      inputRange: [0, height],
-      outputRange: [align === 'center' ? height / -2 : -height, 0],
-      extrapolate: Extrapolate.CLAMP,
-    });
-    //  eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [height, align]);
-};
 
-const useHandleLayout = (
-  { initial, collapsed }: CollapsibleInternalProps,
-  ctx: Context,
-  animateTo: (to: number) => void,
-) => {
-  React.useLayoutEffect(() => {
-    if (ctx.ready && !initial) {
-      ctx.height.setValue(ctx.contentHeight);
-    }
-    //  eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ctx.ready]);
-
-  const handleLayout = React.useCallback(
-    (e: LayoutChangeEvent) => {
-      const layoutHeight = e.nativeEvent.layout.height;
-      if (layoutHeight === ctx.contentHeight || ctx.isAnimating) return;
-      ctx.contentHeight = layoutHeight;
-
-      if (!ctx.ready) {
-        ctx.ready = true;
-        ctx.forceUpdate();
-        if (initial) {
-          animateTo(layoutHeight);
-        } else {
-          ctx.height.setValue(layoutHeight);
-        }
-      } else if (!collapsed) {
-        ctx.height.setValue(layoutHeight);
-      }
-    },
-    //  eslint-disable-next-line react-hooks/exhaustive-deps
-    [collapsed],
-  );
-
-  return ctx.isAnimating ? undefined : handleLayout;
-};
-
-const useAnimate = ({ collapsed }: CollapsibleInternalProps, ctx: Context) => {
-  const animateTo = (to: number) => {
-    ctx.time.setValue(0);
-    ctx.frameTime.setValue(0);
-    ctx.finished.setValue(0);
-    ctx.toValue.setValue(to);
-    ctx.animating.setValue(1);
+    return {
+      initialValues,
+      animations,
+    };
   };
 
-  React.useMemo(() => {
-    ctx.isAnimating = collapsed || ctx.contentHeight !== 0;
-    //  eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collapsed]);
+  const entering: EntryExitAnimationFunction = (
+    targetValues: EntryAnimationsValues,
+  ) => {
+    'worklet';
 
-  React.useLayoutEffect(() => {
-    if (ctx.isAnimating) {
-      animateTo(collapsed ? 0 : ctx.contentHeight);
-    }
-    //  eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collapsed]);
+    return animate(0, targetValues.targetHeight);
+  };
 
-  return animateTo;
-};
+  const exiting: EntryExitAnimationFunction = (
+    targetValues: ExitAnimationsValues,
+  ) => {
+    'worklet';
+    return animate(targetValues.currentHeight, 0);
+  };
 
-const CollapsibleInternal: React.FC<CollapsibleInternalProps> = (props) => {
-  const { initial, style, contentContainerStyle, children, align } = props;
-  const ctx = useInitializer();
-  const height = useHeight(props, ctx);
-  const animateTo = useAnimate(props, ctx);
-  const handleLayout = useHandleLayout(props, ctx, animateTo);
-  const translateY = useContentTranslate(ctx, align);
-  const isReady = initial || ctx.ready;
+  const heightStyle = useAnimatedStyle(() => ({ height: height.value }));
+
+  const layout: LayoutAnimationFunction = (targetValues) => {
+    'worklet';
+    return animate(targetValues.targetHeight, targetValues.targetHeight);
+  };
 
   return (
-    <Animated.View
-      style={[style, isReady && { height }, { overflow: 'hidden' }]}>
-      <Animated.View
-        onLayout={handleLayout}
-        style={[
-          contentContainerStyle,
-          { transform: [{ translateY }] },
-          isReady && { position: 'absolute' },
-        ]}>
-        {children}
-      </Animated.View>
+    <Animated.View style={[style, { overflow: 'hidden' }, heightStyle]}>
+      {!collapsed && (
+        <Animated.View
+          layout={layout}
+          style={[contentContainerStyle, initial && { position: 'absolute' }]}
+          entering={initial ? entering : undefined}
+          exiting={exiting}>
+          {children}
+        </Animated.View>
+      )}
     </Animated.View>
   );
 };
 
-export const Collapsible: React.FC<CollapsibleProps> = ({
-  children,
-  style,
-  contentContainerStyle,
-  collapsed,
-  easing,
-  duration,
-  align,
-}) => {
-  const initial = useConst(collapsed!);
-  const mountedRef = React.useRef<boolean>();
-  mountedRef.current = mountedRef.current || !collapsed;
-  if (!mountedRef.current) return null;
-
+export const Collapsible: React.FC<CollapsibleV2Props> = (props) => {
+  const { collapsed } = props;
+  const initialRef = React.useRef<boolean>();
+  initialRef.current = initialRef.current || collapsed;
   return (
-    <CollapsibleInternal
-      initial={initial}
-      collapsed={collapsed!}
-      style={style}
-      contentContainerStyle={contentContainerStyle}
-      easing={easing!}
-      duration={duration!}
-      align={align!}>
-      {children}
-    </CollapsibleInternal>
+    <CollapsibleV2Internal {...(props as any)} initial={initialRef.current} />
   );
 };
 

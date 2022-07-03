@@ -2,3 +2,5 @@ dist
 ios
 android
 node_modules
+.bundle
+local_modules

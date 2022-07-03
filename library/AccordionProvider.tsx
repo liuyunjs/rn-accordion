@@ -19,12 +19,9 @@ export type AccordionProviderProps =
   | TAccordionProviderProps
   | DefaultProviderProps;
 
-export const AccordionProvider: React.FC<AccordionProviderProps> = ({
-  accordion,
-  onSelected,
-  selected,
-  children,
-}) => {
+export const AccordionProvider: React.FC<
+  React.PropsWithChildren<AccordionProviderProps>
+> = ({ accordion, onSelected, selected, children }) => {
   const manager = useWillMount(() => new AccordionManager());
 
   manager.subscribe(onSelected);

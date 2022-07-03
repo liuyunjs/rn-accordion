@@ -9,7 +9,7 @@
  */
 
 import * as React from 'react';
-import { SafeAreaView, Text } from 'react-native';
+import { Text } from 'react-native';
 import {
   AccordionFlatList,
   AccordionPanel,
@@ -24,7 +24,7 @@ const Item = React.memo(({ item }: { item: any }) => {
       <AccordionPanel style={{ height: 100, backgroundColor: 'blue' }}>
         <Text style={{ fontSize: 30 }}>{item}</Text>
       </AccordionPanel>
-      <AccordionContent style={{ backgroundColor: 'red' }}>
+      <AccordionContent useV2 style={{ backgroundColor: 'red' }}>
         <Text onPress={() => setCount(count + 10)} style={{ fontSize: 24 }}>
           {item} -1
         </Text>
@@ -43,16 +43,16 @@ const Item = React.memo(({ item }: { item: any }) => {
 
 export default function App() {
   return (
-    <SafeAreaView>
+    <>
       <AccordionFlatList
-        // accordion
+        accordion
         renderItem={({ item }) => {
           return <Item item={item} />;
         }}
-        // selected={'2'}
+        selected={'2'}
         keyExtractor={(i) => i + ''}
-        data={new Array(100).fill(0).map((v, i) => i)}
+        data={new Array(3).fill(0).map((v, i) => i)}
       />
-    </SafeAreaView>
+    </>
   );
 }
