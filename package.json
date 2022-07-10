@@ -1,6 +1,6 @@
 {
   "name": "rn-accordion",
-  "version": "2.1.0",
+  "version": "3.0.0-beta1",
   "private": false,
   "main": "./dist/main.js",
   "types": "./dist/main.d.ts",

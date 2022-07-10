@@ -1,9 +1,32 @@
 import * as React from 'react';
-import { AccordionKeyContext } from './AccordionContext';
+import {
+  AccordionKeyContext,
+  ManagerContext,
+  AccordionSelectedContext,
+} from './AccordionContext';
 
 export type AccordionItemProps = {
   id: string | number;
   children?: React.ReactNode;
+};
+
+const useSelected = (key: string) => {
+  const manager = React.useContext(ManagerContext);
+  const [selected, setSelected] = React.useState(() => manager.isSelected(key));
+
+  React.useEffect(() => {
+    const subscribe = () => {
+      setSelected(manager.isSelected(key));
+    };
+
+    manager.on('update', subscribe);
+
+    return () => {
+      manager.off('update', subscribe);
+    };
+  }, [key, manager]);
+
+  return selected;
 };
 
 export const AccordionItem: React.FC<
@@ -12,7 +35,9 @@ export const AccordionItem: React.FC<
   const key = id + '';
   return (
     <AccordionKeyContext.Provider value={key}>
-      {children}
+      <AccordionSelectedContext.Provider value={useSelected(key)}>
+        {children}
+      </AccordionSelectedContext.Provider>
     </AccordionKeyContext.Provider>
   );
 };

@@ -4,15 +4,15 @@ import Animated, {
   EntryAnimationsValues,
   ExitAnimationsValues,
   withTiming,
-  Easing,
   EntryExitAnimationFunction,
   AnimateStyle,
   useSharedValue,
   useAnimatedStyle,
   LayoutAnimationFunction,
+  WithTimingConfig,
 } from 'react-native-reanimated';
 
-interface CollapsibleV2InternalProps {
+interface CollapsibleInternalProps {
   initial: boolean;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
@@ -22,12 +22,12 @@ interface CollapsibleV2InternalProps {
   collapsed: boolean;
 }
 
-export type CollapsibleV2Props = Partial<
-  Omit<CollapsibleV2InternalProps, 'initial'>
+export type CollapsibleProps = Partial<
+  Omit<CollapsibleInternalProps, 'initial'>
 >;
 
-const CollapsibleV2Internal: React.FC<
-  React.PropsWithChildren<CollapsibleV2InternalProps>
+const CollapsibleInternal: React.FC<
+  React.PropsWithChildren<CollapsibleInternalProps>
 > = ({
   children,
   easing,
@@ -42,30 +42,39 @@ const CollapsibleV2Internal: React.FC<
 
   const animate = (from: number, to: number) => {
     'worklet';
-    const config = { duration, easing };
-    height.value = from;
-    height.value = withTiming(to, config);
+
+    const elementHeight = Math.max(from, to);
 
     const initialValues: ViewStyle = {
-      height: from,
+      height: elementHeight,
     };
 
     const animations: AnimateStyle<ViewStyle> = {
-      height: withTiming(to, config),
+      height: elementHeight,
     };
 
-    if (align !== 'top') {
-      initialValues.transform = [
-        { translateY: align === 'center' ? to / -2 : -to },
-      ];
-      animations.transform = [
-        {
-          translateY: withTiming(
-            align === 'center' ? from / -2 : -from,
-            config,
-          ),
-        },
-      ];
+    height.value = from;
+
+    if (from !== to) {
+      const config: WithTimingConfig = { duration };
+      if (easing) {
+        config.easing = easing;
+      }
+      height.value = withTiming(to, config);
+
+      if (align !== 'top') {
+        initialValues.transform = [
+          { translateY: align === 'center' ? to / -2 : -to },
+        ];
+        animations.transform = [
+          {
+            translateY: withTiming(
+              align === 'center' ? from / -2 : -from,
+              config,
+            ),
+          },
+        ];
+      }
     }
 
     return {
@@ -111,12 +120,12 @@ const CollapsibleV2Internal: React.FC<
   );
 };
 
-export const Collapsible: React.FC<CollapsibleV2Props> = (props) => {
+export const Collapsible: React.FC<CollapsibleInternalProps> = (props) => {
   const { collapsed } = props;
   const initialRef = React.useRef<boolean>();
   initialRef.current = initialRef.current || collapsed;
   return (
-    <CollapsibleV2Internal {...(props as any)} initial={initialRef.current} />
+    <CollapsibleInternal {...(props as any)} initial={initialRef.current} />
   );
 };
 
@@ -124,5 +133,4 @@ Collapsible.defaultProps = {
   align: 'top',
   collapsed: true,
   duration: 300,
-  easing: Easing.out(Easing.cubic),
 };

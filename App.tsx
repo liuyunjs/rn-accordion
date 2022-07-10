@@ -24,7 +24,7 @@ const Item = React.memo(({ item }: { item: any }) => {
       <AccordionPanel style={{ height: 100, backgroundColor: 'blue' }}>
         <Text style={{ fontSize: 30 }}>{item}</Text>
       </AccordionPanel>
-      <AccordionContent useV2 style={{ backgroundColor: 'red' }}>
+      <AccordionContent style={{ backgroundColor: 'red' }}>
         <Text onPress={() => setCount(count + 10)} style={{ fontSize: 24 }}>
           {item} -1
         </Text>
