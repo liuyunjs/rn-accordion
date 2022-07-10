@@ -6,5 +6,3 @@ export const AccordionKeyContext = React.createContext<string>();
 
 // @ts-ignore
 export const ManagerContext = React.createContext<AccordionManager>();
-
-export const AccordionSelectedContext = React.createContext(false);
